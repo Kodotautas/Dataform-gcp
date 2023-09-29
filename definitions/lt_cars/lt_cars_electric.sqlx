@@ -1,0 +1,50 @@
+config { 
+        type: "view",
+        description: 'SQL to get lt all lt green companies'
+       }
+
+with base as (
+  select 
+    *
+  from `vl-data-learn.lithuania_statistics.Atviri_JTP_parko_duomenys`
+  where KATEGORIJA_KLASE = 'M1'
+),
+add_total_cars as (
+  select 
+    KODAS,
+    PAVADINIMAS,
+    SAVIVALDYBE,
+    APSKRITIS,
+    count(KODAS) as total_cars
+  from base
+  where PAVADINIMAS is not null
+  group by KODAS, PAVADINIMAS, SAVIVALDYBE, APSKRITIS 
+),
+add_electric_cars as (
+    select 
+    KODAS,
+    PAVADINIMAS,
+    SAVIVALDYBE,
+    APSKRITIS,
+    count(KODAS) as total_electric_cars
+  from base
+  where DEGALAI = 'Elektra'
+  group by KODAS, PAVADINIMAS, SAVIVALDYBE, APSKRITIS
+),
+join_electric_cars as (
+  select
+    tc.KODAS as company_code,
+    tc.PAVADINIMAS as company_name,
+    tc.SAVIVALDYBE as municipality,
+    tc.APSKRITIS as region,
+    tc.total_cars,
+    ec.total_electric_cars,
+    ROUND((ec.total_electric_cars / tc.total_cars)*100,1) as electric_cars_share_percent
+  from add_total_cars tc
+  left join add_electric_cars ec on tc.KODAS = ec.KODAS
+)
+
+select * except (total_cars)
+from join_electric_cars
+where electric_cars_share_percent = 100 and region is not null
+order by electric_cars_share_percent desc, total_electric_cars desc

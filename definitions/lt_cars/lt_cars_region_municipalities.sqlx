@@ -1,0 +1,21 @@
+config { 
+        type: "view",
+        description: 'SQL to get region, municipalities data'
+       }
+
+       
+WITH base AS (
+  select 
+  top.region,
+  top.municipality,
+  round(avg(top.avg_salary),0) as top_avg_salary,
+  round(avg(top.avg_employees),0) as top_avg_employees,
+  round(avg(no_top.avg_salary),0) as no_top_avg_salary,
+  round(avg(no_top.avg_employees),0) as no_top_avg_employees
+  from ${ref('lt_cars_top_1000')} top
+  left join ${ref('lt_cars_excluded_top_1000')} no_top 
+    on top.region = no_top.region and top.municipality = no_top.municipality
+  group by top.region, top.municipality
+)
+
+select * from base

@@ -1,0 +1,82 @@
+config { 
+        type: "view",
+        description: 'SQL to get all business cars, but with excluded top 1000'
+       }
+
+WITH base AS (
+  SELECT 
+    *
+  FROM `vl-data-learn.lithuania_statistics.Atviri_JTP_parko_duomenys` regitra
+  WHERE KODAS is not null 
+  AND GALIA is not null
+  AND KATEGORIJA_KLASE = 'M1'
+),
+grouped_sodra as (
+  select 
+    kodas,
+    pavadinimas,
+    savivaldybe,
+    veiklos_kodas,
+    veiklos_pavadinimas,
+    round(avg(vidutinis_darbo_uzmokestis),0) as vidutinis_uzmokestis,
+    round(avg(apdraustuju_skaicius),0) as vid_darb_skaicius
+  FROM `vl-data-learn.lithuania_statistics.employees_salaries_raw`
+  group by kodas, pavadinimas, savivaldybe, veiklos_kodas, veiklos_pavadinimas
+),
+joined AS (
+  select
+    regitra.KODAS as company_code,
+    regitra.PAVADINIMAS as company_name,
+    regitra.MARKE as make,
+    regitra,KOMERCINIS_PAV as car_model,
+    regitra.KATEGORIJA_KLASE AS category,
+    regitra.NUOSAVA_MASE as weight,
+    regitra.GALIA as power_kw,
+    regitra.DEGALAI as powertrain_type,
+    regitra.CO2_KIEKIS as c02,
+    regitra.CO2_KIEKIS__WLTP as c02_wltp,
+    regitra.TERSALU_LYGIS as emmision_standart,
+    regitra.GALIOS_MASES_SANT as power_weight_ratio,
+    regitra.PIRM_REG_DATA as first_reg_date,
+    regitra.PIRM_REG_DATA_LT as first_reg_date_lt,
+    regitra.SAVIVALDYBE as municipality,
+    regitra.APSKRITIS as region,
+    sodra.veiklos_kodas as activity_code,
+    sodra.veiklos_pavadinimas as activity_name,
+    sodra.vidutinis_uzmokestis as avg_salary,
+    sodra.vid_darb_skaicius as avg_employees
+  from base regitra
+  left join grouped_sodra sodra on regitra.KODAS = sodra.kodas
+    and sodra.vid_darb_skaicius >= 1
+)
+
+select 
+    company_code,
+  company_name,
+  make,
+  car_model,
+  category,
+  weight,
+  power_kw,
+  powertrain_type,
+  c02,
+  c02_wltp,
+  emmision_standart,
+  power_weight_ratio,
+  first_reg_date,
+  first_reg_date_lt,
+  municipality,
+  region,
+  activity_code,
+  activity_name,
+  avg_salary,
+  avg_employees
+from joined
+where joined.company_code not in (select company_code from ${ref('lt_cars_top_1000')})
+
+
+
+
+
+
+

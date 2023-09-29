@@ -3,6 +3,6 @@
   "assertionSchema": "dataform_assertions",
   "warehouse": "bigquery",
   "defaultDatabase": "vl-data-learn",
-  "defaultLocation": "EU"
+  "defaultLocation": "europe-west1"
 }
     
