@@ -16,4 +16,5 @@ SELECT
   *,
   (current_year - registration_year) AS car_age_up_to_current_year
 FROM base
+WHERE GALIA < 1000
 
