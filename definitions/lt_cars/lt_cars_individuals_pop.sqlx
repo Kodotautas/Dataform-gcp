@@ -34,5 +34,5 @@ SELECT
   model_count,
   ROUND(avg_mileage,0) as avg_mileage
 FROM make_model_counts
-WHERE row_num <= 100
+WHERE row_num <= 100 AND avg_mileage IS NOT NULL
 ORDER BY SAVIVALDYBE, model_count DESC
