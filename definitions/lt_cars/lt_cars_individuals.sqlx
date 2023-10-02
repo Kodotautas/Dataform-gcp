@@ -15,4 +15,4 @@ SELECT
   *,
   (current_year - registration_year) AS car_age_up_to_current_year
 FROM base
-WHERE GALIA < 1000 AND RIDA < 1000000
+WHERE GALIA < 1000 OR GALIA IS NULL
