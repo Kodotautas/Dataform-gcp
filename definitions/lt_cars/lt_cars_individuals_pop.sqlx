@@ -32,7 +32,7 @@ SELECT
   SAVIVALDYBE,
   make_model,
   model_count,
-  avg_mileage
+  ROUND(avg_mileage,0) as avg_mileage
 FROM make_model_counts
 WHERE row_num <= 100
 ORDER BY SAVIVALDYBE, model_count DESC
