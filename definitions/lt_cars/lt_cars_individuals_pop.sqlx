@@ -1,0 +1,35 @@
+config { 
+        type: "view",
+        description: 'SQL to get top individual cars by municipality'
+       }
+
+WITH base AS (
+  SELECT
+    SAVIVALDYBE,
+    concat(MARKE,' ', KOMERCINIS_PAV) as make_model,
+    GALIA
+  FROM `vl-data-learn.lithuania_statistics.Atviri_TP_parko_duomenys`
+  WHERE SAVIVALDYBE NOT LIKE '%BALTARUSIJA%' 
+      AND SAVIVALDYBE NOT LIKE '%JUNGTINĖ KARALYSTĖ%'
+      AND SAVIVALDYBE NOT LIKE '%KANADA%'
+      AND SAVIVALDYBE NOT LIKE '%LATVIJA%'
+      AND (GALIA < 1000 OR GALIA IS NULL)
+),
+make_model_counts AS (
+  SELECT
+    SAVIVALDYBE,
+    make_model,
+    COUNT(*) AS model_count,
+    ROW_NUMBER() OVER(PARTITION BY SAVIVALDYBE ORDER BY COUNT(*) DESC) AS row_num
+  FROM base
+  WHERE make_model != 'Nuasmeninta Nuasmeninta'
+  GROUP BY SAVIVALDYBE, make_model
+)
+
+SELECT
+  SAVIVALDYBE,
+  make_model,
+  model_count
+FROM make_model_counts
+WHERE row_num <= 10
+ORDER BY SAVIVALDYBE, model_count DESC
