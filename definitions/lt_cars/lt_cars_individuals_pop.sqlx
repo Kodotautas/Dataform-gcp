@@ -7,7 +7,8 @@ WITH base AS (
   SELECT
     SAVIVALDYBE,
     concat(MARKE,' ', KOMERCINIS_PAV) as make_model,
-    GALIA
+    GALIA,
+    RIDA
   FROM `vl-data-learn.lithuania_statistics.Atviri_TP_parko_duomenys`
   WHERE SAVIVALDYBE NOT LIKE '%BALTARUSIJA%' 
       AND SAVIVALDYBE NOT LIKE '%JUNGTINĖ KARALYSTĖ%'
@@ -20,6 +21,7 @@ make_model_counts AS (
     SAVIVALDYBE,
     make_model,
     COUNT(*) AS model_count,
+    AVG(RIDA) as avg_mileage,
     ROW_NUMBER() OVER(PARTITION BY SAVIVALDYBE ORDER BY COUNT(*) DESC) AS row_num
   FROM base
   WHERE make_model != 'Nuasmeninta Nuasmeninta'
@@ -29,7 +31,8 @@ make_model_counts AS (
 SELECT
   SAVIVALDYBE,
   make_model,
-  model_count
+  model_count,
+  avg_mileage
 FROM make_model_counts
 WHERE row_num <= 100
 ORDER BY SAVIVALDYBE, model_count DESC
