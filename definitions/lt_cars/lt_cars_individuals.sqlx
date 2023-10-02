@@ -9,12 +9,10 @@ WITH base AS (
     EXTRACT(YEAR FROM DATE(PIRM_REG_DATA)) AS registration_year,
     EXTRACT(YEAR FROM CURRENT_DATE()) AS current_year
   FROM `vl-data-learn.lithuania_statistics.Atviri_TP_parko_duomenys`
-  WHERE VALD_TIPAS = 'Fizinis'
 )
 
 SELECT
   *,
   (current_year - registration_year) AS car_age_up_to_current_year
 FROM base
-WHERE GALIA < 1000
-
+WHERE GALIA < 1000 AND RIDA < 1000000
