@@ -31,5 +31,5 @@ SELECT
   make_model,
   model_count
 FROM make_model_counts
-WHERE row_num <= 10
+WHERE row_num <= 100
 ORDER BY SAVIVALDYBE, model_count DESC
