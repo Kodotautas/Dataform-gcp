@@ -9,6 +9,10 @@ WITH base AS (
     EXTRACT(YEAR FROM DATE(PIRM_REG_DATA)) AS registration_year,
     EXTRACT(YEAR FROM CURRENT_DATE()) AS current_year
   FROM `vl-data-learn.lithuania_statistics.Atviri_TP_parko_duomenys`
+  WHERE SAVIVALDYBE NOT LIKE '%BALTARUSIJA%' 
+      AND SAVIVALDYBE NOT LIKE '%JUNGTINĖ KARALYSTĖ%'
+      AND SAVIVALDYBE NOT LIKE '%KANADA%'
+      AND SAVIVALDYBE NOT LIKE '%LATVIJA%'
 )
 
 SELECT
