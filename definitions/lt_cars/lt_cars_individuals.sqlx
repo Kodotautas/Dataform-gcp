@@ -17,6 +17,7 @@ WITH base AS (
 
 SELECT
   *,
-  (current_year - registration_year) AS car_age_up_to_current_year
+  (current_year - registration_year) AS car_age_up_to_current_year,
+  CONCAT(EXTRACT(YEAR FROM DATE(PIRM_REG_DATA_LT)), '-', EXTRACT(MONTH FROM DATE(PIRM_REG_DATA_LT))) AS year_month
 FROM base
 WHERE GALIA < 1000 OR GALIA IS NULL
