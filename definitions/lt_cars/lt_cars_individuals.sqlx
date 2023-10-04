@@ -7,7 +7,8 @@ WITH base AS (
   SELECT
     *,
     EXTRACT(YEAR FROM DATE(PIRM_REG_DATA)) AS registration_year,
-    EXTRACT(YEAR FROM CURRENT_DATE()) AS current_year
+    EXTRACT(YEAR FROM CURRENT_DATE()) AS current_year,
+    EXTRACT(MONTH FROM DATE(PIRM_REG_DATA)) AS registration_month
   FROM `vl-data-learn.lithuania_statistics.Atviri_TP_parko_duomenys`
   WHERE SAVIVALDYBE NOT LIKE '%BALTARUSIJA%' 
       AND SAVIVALDYBE NOT LIKE '%JUNGTINĖ KARALYSTĖ%'
@@ -18,6 +19,6 @@ WITH base AS (
 SELECT
   *,
   (current_year - registration_year) AS car_age_up_to_current_year,
-FORMAT_DATE("%Y-%m", PARSE_DATE("%Y-%m", CONCAT(EXTRACT(YEAR FROM DATE(PIRM_REG_DATA)), '-', EXTRACT(MONTH FROM DATE(PIRM_REG_DATA))))) AS year_month
+  DATE(REGISTRATION_YEAR, registration_month, 1) AS year_month
 FROM base
 WHERE GALIA < 1000 OR GALIA IS NULL
