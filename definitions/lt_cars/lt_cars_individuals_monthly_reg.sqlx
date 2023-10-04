@@ -8,7 +8,7 @@ WITH base AS (
   select 
     *
   from ${ref('lt_cars_individuals')} individuals
-  where PIRM_REG_DATA_LT is not null and year_month_lt >= '1990-01-01'
+  where PIRM_REG_DATA_LT is not null and year_month_lt >= '2000-01-01'
 )
 
 select * from base
