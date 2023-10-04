@@ -19,7 +19,8 @@ WITH base AS (
 SELECT
   *,
   (current_year - registration_year) AS car_age_up_to_current_year,
-  DATE(EXTRACT(YEAR FROM DATE(PIRM_REG_DATA_LT)), EXTRACT(MONTH FROM DATE(PIRM_REG_DATA_LT)), 1) AS year_month_lt
+  DATE(EXTRACT(YEAR FROM DATE(PIRM_REG_DATA_LT)), 
+      (EXTRACT(QUARTER FROM DATE(PIRM_REG_DATA_LT)) - 1) * 3 + 1, 1) AS year_quarter 
 FROM base
 WHERE GALIA < 1000 OR GALIA IS NULL
 
