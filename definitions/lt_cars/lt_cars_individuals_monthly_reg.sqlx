@@ -1,0 +1,14 @@
+config { 
+        type: "view",
+        description: 'SQL to get individuals registration each month'
+       }
+
+       
+WITH base AS (
+  select 
+    *
+  from ${ref('lt_cars_individuals')} individuals
+  where PIRM_REG_DATA_LT is not null
+)
+
+select * from base
