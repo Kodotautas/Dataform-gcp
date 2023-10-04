@@ -14,6 +14,7 @@ WITH base AS (
       AND SAVIVALDYBE NOT LIKE '%JUNGTINĖ KARALYSTĖ%'
       AND SAVIVALDYBE NOT LIKE '%KANADA%'
       AND SAVIVALDYBE NOT LIKE '%LATVIJA%'
+      AND DEGALAI = 'Elektra'
 )
 
 SELECT
@@ -21,7 +22,3 @@ SELECT
   (current_year - registration_year) AS car_age_up_to_current_year,
   DATE(REGISTRATION_YEAR, registration_month, 1) AS year_month
 FROM base
-WHERE GALIA < 1000 OR GALIA IS NULL
-
-
-
