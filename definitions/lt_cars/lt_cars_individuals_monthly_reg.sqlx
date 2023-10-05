@@ -30,5 +30,4 @@ modifications as (
 from base
 )
 
-select make, count(make) as counter from modifications
-group by make
+select * from modifications
