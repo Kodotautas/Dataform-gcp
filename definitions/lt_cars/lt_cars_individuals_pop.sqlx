@@ -6,7 +6,13 @@ config {
 WITH base AS (
   SELECT
     SAVIVALDYBE,
-    concat(MARKE,' ', KOMERCINIS_PAV) as make_model,
+    case when MARKE in ('Volkswagen', 'Volkswagen. VW', 'VOLKSWAGEN. VW', 'VOLKSWAGEN', 'VOLKSWAGEN-VW') then 'VW' 
+        when MARKE in ('Audi', 'AUDI (H)', 'AUDI AG', 'AUDI AUDI') then 'AUDI'
+        when MARKE in ('MERCEDES BENZ', 'MERCEDES', 'Mercedes-Benz', 'MERCEDES-BENZ (D)', 'Daimler (D) Mercedes-Benz', 'MERCEDES-BENZ') then 'MERCEDES-BENZ'
+        when MARKE in ('BAYER.MOT.WERKE-BMW', 'BMW AG', 'BMW i', 'B.M.W.', 'BAYER.MOT.WERKE-BMW BMW') then 'BMW'
+        else MARKE 
+    end as MARKE,
+    KOMERCINIS_PAV,
     GALIA,
     RIDA
   FROM `vl-data-learn.lithuania_statistics.Atviri_TP_parko_duomenys`
@@ -19,12 +25,12 @@ WITH base AS (
 make_model_counts AS (
   SELECT
     SAVIVALDYBE,
-    make_model,
+    concat(MARKE, ' ', KOMERCINIS_PAV) as make_model,
     COUNT(*) AS model_count,
     AVG(RIDA) as avg_mileage,
     ROW_NUMBER() OVER(PARTITION BY SAVIVALDYBE ORDER BY COUNT(*) DESC) AS row_num
   FROM base
-  WHERE make_model != 'Nuasmeninta Nuasmeninta'
+  WHERE concat(MARKE, ' ', KOMERCINIS_PAV) != 'Nuasmeninta Nuasmeninta'
   GROUP BY SAVIVALDYBE, make_model
 )
 
