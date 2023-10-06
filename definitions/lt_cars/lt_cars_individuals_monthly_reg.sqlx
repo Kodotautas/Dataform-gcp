@@ -8,23 +8,23 @@ WITH base AS (
   select 
     *
   from ${ref('lt_cars_individuals')} individuals
-  where PIRM_REG_DATA_LT is not null and year_quarter >= '2000-01-01'
+  where first_registration_lt is not null and year_quarter >= '2000-01-01'
 ),
 modifications as (
   select
-    case when MARKE in ('Volkswagen', 'Volkswagen. VW', 'VOLKSWAGEN. VW', 'VOLKSWAGEN', 'VOLKSWAGEN-VW') then 'VW' 
-        when MARKE in ('Audi', 'AUDI (H)', 'AUDI AG', 'AUDI AUDI') then 'AUDI'
-        when MARKE in ('MERCEDES BENZ', 'MERCEDES', 'Mercedes-Benz', 'MERCEDES-BENZ (D)', 'Daimler (D) Mercedes-Benz', 'MERCEDES-BENZ') then 'MERCEDES-BENZ'
-        when MARKE in ('BAYER.MOT.WERKE-BMW', 'BMW AG', 'BMW i', 'B.M.W.', 'BAYER.MOT.WERKE-BMW BMW') then 'BMW'
-        else MARKE 
+    case when make in ('Volkswagen', 'Volkswagen. VW', 'VOLKSWAGEN. VW', 'VOLKSWAGEN', 'VOLKSWAGEN-VW') then 'VW' 
+        when make in ('Audi', 'AUDI (H)', 'AUDI AG', 'AUDI AUDI') then 'AUDI'
+        when make in ('MERCEDES BENZ', 'MERCEDES', 'Mercedes-Benz', 'MERCEDES-BENZ (D)', 'Daimler (D) Mercedes-Benz', 'MERCEDES-BENZ') then 'MERCEDES-BENZ'
+        when make in ('BAYER.MOT.WERKE-BMW', 'BMW AG', 'BMW i', 'B.M.W.', 'BAYER.MOT.WERKE-BMW BMW') then 'BMW'
+        else make 
     end as make,
-    KOMERCINIS_PAV as model,
-    GALIA as power_kW,
-    RIDA as mileage,
-    PIRM_REG_DATA as reg_date,
-    PIRM_REG_DATA_LT as reg_date_lt,
-    SAVIVALDYBE as municipality,
-    APSKRITIS as region,
+    model,
+    power_kW,
+    mileage,
+    first_registration,
+    first_registration_lt,
+    municipality,
+    region,
     car_age_up_to_current_year,
     year_quarter
 from base
