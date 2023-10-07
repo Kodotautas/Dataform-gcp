@@ -35,7 +35,7 @@ make_model_counts AS (
 )
 
 SELECT
-  SAVIVALDYBE,
+  SAVIVALDYBE as municipality,
   make_model,
   model_count,
   ROUND(avg_mileage,0) as avg_mileage
