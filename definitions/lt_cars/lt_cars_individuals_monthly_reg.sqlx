@@ -19,6 +19,7 @@ modifications as (
         else make 
     end as make,
     model,
+    fuel,
     power_kW,
     mileage,
     first_registration as reg_date,
@@ -30,4 +31,4 @@ modifications as (
 from base
 )
 
-select * from modifications
+select * from base
