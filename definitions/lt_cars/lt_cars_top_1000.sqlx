@@ -76,5 +76,5 @@ select
 from joined
 where municipality is not null and avg_salary is not null
 order by power_kw desc
-limit 1018
+limit 1019
 
