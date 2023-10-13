@@ -12,7 +12,7 @@ WITH base AS (
   FROM `vl-data-learn.lithuania_statistics.tractors`
 )
 
-SELECT
+SELECT DISTINCT
   *,
   (current_year - registration_year) AS car_age_up_to_current_year,
   DATE(EXTRACT(YEAR FROM DATE(reg_date_lt)), 
