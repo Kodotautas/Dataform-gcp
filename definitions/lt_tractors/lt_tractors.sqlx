@@ -13,8 +13,8 @@ WITH base AS (
 )
 
 SELECT DISTINCT
-  *,
-  (current_year - registration_year) AS car_age_up_to_current_year,
+  * except(url, current_year, registration_month),
+  (current_year - registration_year) AS tractor_age_up_to_current_year,
   DATE(EXTRACT(YEAR FROM DATE(reg_date_lt)), 
       (EXTRACT(QUARTER FROM DATE(reg_date_lt)) - 1) * 3 + 1, 1) AS year_quarter 
 FROM base
