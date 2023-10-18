@@ -3,18 +3,18 @@ config {
         description: 'SQL to get all registered tractors'
        }
 
-WITH base AS (
-  SELECT
+with base as (
+  select
     *,
-    EXTRACT(YEAR FROM DATE(reg_date)) AS registration_year,
-    EXTRACT(YEAR FROM CURRENT_DATE()) AS current_year,
-    EXTRACT(MONTH FROM DATE(reg_date)) AS registration_month
-  FROM `vl-data-learn.lithuania_statistics.tractors`
+    EXTRACT(year from date(reg_date)) as registration_year,
+    EXTRACT(year from current_date()) as current_year,
+    EXTRACT(month from date(reg_date)) as registration_month
+  from `vl-data-learn.lithuania_statistics.tractors`
 )
 
-SELECT DISTINCT
+select distinct
   * except(url, current_year, registration_month),
   (current_year - registration_year) AS tractor_age_up_to_current_year,
-  DATE(EXTRACT(YEAR FROM DATE(reg_date_lt)), 
-      (EXTRACT(QUARTER FROM DATE(reg_date_lt)) - 1) * 3 + 1, 1) AS year_quarter 
-FROM base
+  date(EXTRACT(year from date(reg_date_lt)), 
+      (EXTRACT(quarter from date(reg_date_lt)) - 1) * 3 + 1, 1) as year_quarter 
+from base
