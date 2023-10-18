@@ -7,7 +7,7 @@ with base AS (
   select 
     *
   from `vl-data-learn.lithuania_statistics.Atviri_JTP_parko_duomenys` regitra
-  where KODAS is not null 
+  where KODAS not in ('451100', '771100', '771000')
   and GALIA is not null
   and KATEGORIJA_KLASE in ('L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7')
 ),
