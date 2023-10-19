@@ -34,12 +34,12 @@ modifications as (
   select
     case when make in ('VOLKSWAGEN AG','VOLKSWAGEN VW','VOLKSWAGEN CTS','VOLKSWAGEN-VW VOLKSWAGEN. VW','5750 VOLKSWAGEN','VOLKSWAGEN/CTS', 'VOLKSWAGEN / AUTO-FORM', 'Volkswagen', 'Volkswagen. VW', 'VOLKSWAGEN. VW', 'VOLKSWAGEN', 'VOLKSWAGEN-VW') then 'VW' 
         when make in ('Audi', 'AUDI (H)', 'AUDI AG', 'AUDI AUDI') then 'AUDI'
-        when make in ('MERCEDES AMG','MERCEDES-AMG','MERCEDES BENZ', 'MERCEDES', 'Mercedes-Benz', 'MERCEDES-BENZ (D)', 'Daimler (D) Mercedes-Benz', 'MERCEDES-BENZ') then 'MERCEDES-BENZ'
+        when make in ('DAIMLER AG', 'DAIMLER AG MB','DAIMLER (D) MERCEDES-BENZ','MERCEDES-BENZ MERCEDES-BENZ','DAIMLERCHRYSLER (D) MERCEDES-BENZ','MERCEDES-BENZ (E)','MERCEDES AMG','MERCEDES-AMG','MERCEDES BENZ', 'MERCEDES', 'Mercedes-Benz', 'MERCEDES-BENZ (D)', 'Daimler (D) Mercedes-Benz', 'MERCEDES-BENZ') then 'MERCEDES-BENZ'
         when make in ('BAYERISCHE MOTOREN WERKE AG','BMW I','BAYER.MOT.WERKE-BMW', 'BMW AG', 'BMW i', 'B.M.W.', 'BAYER.MOT.WERKE-BMW BMW', '1400 BMW') then 'BMW'
         when make in ('KIA MOTORS (SK)','KIA MOTOR (ROK)') then 'KIA'
-        when make in ('FORD CNG TECHNIK','FORD (D) FORD','FORD-CNG-TECHNIK', '2600 FORD') then 'FORD'
-        when make in ('RENAULT (F) RENAULT','RENAULT (F)', 'RENAULT/CARPOL') then 'RENAULT'
-        when make in ('DAIMLERCHRYSLER CO CHRYSLER','CHRYSLER LLC DODGE','CHRYSLER LLC CHRYSLER','DAIMLERCHRYSLER AG','DAIMLERCHRYSLER (USA)', 'DAIMLERCHRYSLER', 'DAIMLERCHRYSLER (D)') then 'CHRYSLER'
+        when make in ('FORD W. GMBH','FORD CNG TECHNIK','FORD (D) FORD','FORD-CNG-TECHNIK', '2600 FORD') then 'FORD'
+        when make in ('SOVAB (F)', 'RENAULT (F) RENAULT','RENAULT (F)', 'RENAULT/CARPOL') then 'RENAULT'
+        when make in ('DAIMLERCHRYSLER AG MB','CHRYSLER (USA)', 'DAIMLERCHRYSLER CO CHRYSLER','CHRYSLER LLC DODGE','CHRYSLER LLC CHRYSLER','DAIMLERCHRYSLER AG','DAIMLERCHRYSLER (USA)', 'DAIMLERCHRYSLER', 'DAIMLERCHRYSLER (D)') then 'CHRYSLER'
         when make in ('FORD W GMBH','FORD (D)') then 'FORD'
         when make in ('MITSUBISHI (NL)', 'MITSUBISHI (J)') then 'MITSUBISHI'
         when make in ('NISSAN EUROPE (NL)','NISSAN EUROPE (F)') then 'NISSAN'
@@ -51,19 +51,25 @@ modifications as (
         when make in ('CITROEN (F) CITROEN','CITROEN (F)', 'AUTOMOBILES CITROEN') then 'CITROEN'
         when make in ('PEUGEOT (F) PEUGEOT','4500 PEUGEOT', 'AUTOMOBILES PEUGEOT', 'PEUGEOT (F)') then 'PEUGEOT'
         when make in ('HONDA MOTOR CO. ','HONDA (GB)', 'HONDA (RC)', 'HONDA MOTOR (J)', 'HONDA OF THE UK') then 'HONDA'
-        when make in ('HYUNDAI. GENESIS', 'HYUNDAI MOTOR (SK)','HYUNDAI MOTOR (ROK) HYUNDAI','HYUNDAI MOTOR (ROK)') then 'HYUNDAI'
-        when make in ('MAZDA (J)') then 'MAZDA'
+        when make in ('HYUNDAI MOTOR (CZ)','HYUNDAI. GENESIS', 'HYUNDAI MOTOR (SK)','HYUNDAI MOTOR (ROK) HYUNDAI','HYUNDAI MOTOR (ROK)') then 'HYUNDAI'
+        when make in ('MAZDA (J) MAZDA', 'MAZDA (J)') then 'MAZDA'
         when make in ('SSANG YONG') then 'SSANGYONG'
-        when make in ('VOLVO (S) VOLVO','VOLVO (S)') then 'VOLVO'
+        when make in ('VOLVO CAR CORPORATION','VOLVO (S) VOLVO','VOLVO (S)') then 'VOLVO'
         when make in ('SAAB AUTOMOBILE (S)','5000 SAAB') then 'SAAB'
-        when make in ('FIAT-DETHLEFFS','FIAT AUTO SPA','FIAT (I)') then 'FIAT'
-        when make in ('FUJI HEAVY IND.(J)') then 'SUBARU'
+        when make in ('FIAT GROUP AUTOMOBILES SPA','FIAT-DETHLEFFS','FIAT AUTO SPA','FIAT (I)') then 'FIAT'
+        when make in ('FUJI HEAVY IND.(J) SUBARU', 'FUJI HEAVY IND.(J)') then 'SUBARU'
         when make in ('GM DAEWOO (ROK)') then 'GM DAEWOO'
         when make in ('TESLA (USA) TESLA','TESLA MOTORS') then 'TESLA'
         when make in ('JAGUAR (GB)','JAGUAR CARS LIMITED') then 'JAGUAR'
         when make in ('SUZUKI (J)') then 'SUZUKI'
         when make in ('AUTOMOBILI LAMBORGHINI', 'AUTOMOBILI LAMBORGHINI S.P.A.') then 'LAMBORGHINI'
-        when make in ('JAGUAR LAND ROVER LIMITED','LANDROVER', 'LAND ROVER (GB)') then 'LAND ROVER'
+        when make in ('JAGUAR LAND ROVER LTD', 'JAGUAR LAND ROVER','JAGUAR LAND ROVER LIMITED','LANDROVER', 'LAND ROVER (GB)') then 'LAND ROVER'
+        when make in ('CHALLENGER') then 'DODGE'
+        when make in ('MINI MINI') then 'MINI'
+        when make in ('MAGYAR SUZUKI (H)') then 'SUZUKI'
+        when make in ('DAIMLERCHRYSLER CO JEEP') then 'JEEP'
+        when make in ('ROVER (GB)') then 'ROVER'
+        when make in ('DAIHATSU (J)') then 'DAIHATSU'
         else make 
     end as make,
 --     model,
@@ -96,6 +102,7 @@ calculate_share as (
 )
 
 select * from calculate_share
-where registration_year is not null
+where registration_year is not null 
+        and make not in ('NUASMENINTA', 'NETHERLANDS CAR (NL)')
 
 
