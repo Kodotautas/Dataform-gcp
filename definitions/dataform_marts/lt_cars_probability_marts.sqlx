@@ -89,7 +89,8 @@ calculate_share as (
                 registration_year,
                 SUM(counted) as total_cars,
                 SUM(case when user = 'company' then counted else 0 end) as company_cars,
-                ROUND((SUM(case when user = 'company' then counted else 0 end) / SUM(counted)) * 100,1) as company_share
+                ROUND((SUM(case when user = 'company' then counted else 0 end) / SUM(counted)) * 100,1) as company_share,
+                ROUND((SUM(case when user = 'individual' then counted else 0 end) / SUM(counted)) * 100,1) as individual_share
         from group_data
         group by make, registration_year
 )
