@@ -32,7 +32,7 @@ join_tables as (
 ),
 modifications as (
   select
-    case when make in ('VOLKSWAGEN VW','VOLKSWAGEN CTS','VOLKSWAGEN-VW VOLKSWAGEN. VW','5750 VOLKSWAGEN','VOLKSWAGEN/CTS', 'VOLKSWAGEN / AUTO-FORM', 'Volkswagen', 'Volkswagen. VW', 'VOLKSWAGEN. VW', 'VOLKSWAGEN', 'VOLKSWAGEN-VW') then 'VW' 
+    case when make in ('VOLKSWAGEN AG','VOLKSWAGEN VW','VOLKSWAGEN CTS','VOLKSWAGEN-VW VOLKSWAGEN. VW','5750 VOLKSWAGEN','VOLKSWAGEN/CTS', 'VOLKSWAGEN / AUTO-FORM', 'Volkswagen', 'Volkswagen. VW', 'VOLKSWAGEN. VW', 'VOLKSWAGEN', 'VOLKSWAGEN-VW') then 'VW' 
         when make in ('Audi', 'AUDI (H)', 'AUDI AG', 'AUDI AUDI') then 'AUDI'
         when make in ('MERCEDES AMG','MERCEDES-AMG','MERCEDES BENZ', 'MERCEDES', 'Mercedes-Benz', 'MERCEDES-BENZ (D)', 'Daimler (D) Mercedes-Benz', 'MERCEDES-BENZ') then 'MERCEDES-BENZ'
         when make in ('BAYERISCHE MOTOREN WERKE AG','BMW I','BAYER.MOT.WERKE-BMW', 'BMW AG', 'BMW i', 'B.M.W.', 'BAYER.MOT.WERKE-BMW BMW', '1400 BMW') then 'BMW'
