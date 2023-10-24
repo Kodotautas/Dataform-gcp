@@ -18,3 +18,4 @@ add_age as (
 )
 
 select * except(ship_constructed) from add_age
+where ship_side_hght > 0 and ship_length > 0 and ship_width > 0
