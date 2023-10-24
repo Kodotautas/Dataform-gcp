@@ -8,7 +8,7 @@ with base as (
         *,
         EXTRACT(YEAR FROM DATE(ship_constructed)) AS registration_year,
         EXTRACT(YEAR FROM CURRENT_DATE()) AS current_year
-    from `vl-data-learn.lithuania_statistics.inland_vessels_raw`
+    from `vl-data-learn.lithuania_statistics.marine_vessels_raw`
 ),
 add_age as (
     select
