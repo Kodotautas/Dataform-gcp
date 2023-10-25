@@ -74,7 +74,6 @@ select
   avg_salary,
   avg_employees
 from joined
-where municipality is not null and avg_salary is not null
+where municipality is not null and avg_salary is not null and power_kw >= 300
 order by power_kw desc
-limit 1019
 
