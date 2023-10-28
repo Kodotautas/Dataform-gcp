@@ -12,7 +12,7 @@ WITH base AS (
 ),
 modifications as (
   select
-    case when make in ('Volkswagen. VW', 'VOLKSWAGEN AG','VOLKSWAGEN VW','VOLKSWAGEN CTS','VOLKSWAGEN-VW VOLKSWAGEN. VW','5750 VOLKSWAGEN','VOLKSWAGEN/CTS', 'VOLKSWAGEN / AUTO-FORM', 'Volkswagen', 'Volkswagen. VW', 'VOLKSWAGEN. VW', 'VOLKSWAGEN', 'VOLKSWAGEN-VW') then 'VW' 
+    case when make in ('VOLKWAGEN. VW', 'Volkswagen. VW', 'VOLKSWAGEN AG','VOLKSWAGEN VW','VOLKSWAGEN CTS','VOLKSWAGEN-VW VOLKSWAGEN. VW','5750 VOLKSWAGEN','VOLKSWAGEN/CTS', 'VOLKSWAGEN / AUTO-FORM', 'Volkswagen', 'Volkswagen. VW', 'VOLKSWAGEN. VW', 'VOLKSWAGEN', 'VOLKSWAGEN-VW') then 'VW' 
         when make in ('Audi', 'AUDI (H)', 'AUDI AG', 'AUDI AUDI') then 'AUDI'
         when make in ('DAIMLER AG', 'DAIMLER AG MB','DAIMLER (D) MERCEDES-BENZ','MERCEDES-BENZ MERCEDES-BENZ','DAIMLERCHRYSLER (D) MERCEDES-BENZ','MERCEDES-BENZ (E)','MERCEDES AMG','MERCEDES-AMG','MERCEDES BENZ', 'MERCEDES', 'Mercedes-Benz', 'MERCEDES-BENZ (D)', 'Daimler (D) Mercedes-Benz', 'MERCEDES-BENZ') then 'MERCEDES-BENZ'
         when make in ('BAYERISCHE MOTOREN WERKE AG','BMW I','BAYER.MOT.WERKE-BMW', 'BMW AG', 'BMW i', 'B.M.W.', 'BAYER.MOT.WERKE-BMW BMW', '1400 BMW') then 'BMW'
@@ -65,4 +65,4 @@ modifications as (
 from base
 )
 
-select * from base
+select * from modifications
