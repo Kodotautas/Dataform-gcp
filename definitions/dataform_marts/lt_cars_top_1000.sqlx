@@ -57,13 +57,13 @@ select
   make,
   car_model,
   category,
-  weight,
+  -- weight,
   power_kw,
   powertrain_type,
   c02,
-  c02_wltp,
-  emmision_standart,
-  power_weight_ratio,
+  -- c02_wltp,
+  -- emmision_standart,
+  -- power_weight_ratio,
   first_reg_date,
   first_reg_date_lt,
   FORMAT_DATE('%Y-%m', first_reg_date_lt) as first_reg_date_in_lt,
@@ -76,4 +76,3 @@ select
 from joined
 where municipality is not null and avg_salary is not null and power_kw >= 300
 order by power_kw desc
-
