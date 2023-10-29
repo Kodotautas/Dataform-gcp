@@ -6,7 +6,6 @@ config {
 with individuals_base as (
         select 
                 upper(make) as make,
-                -- upper(model) as model,
                 'individual' as user,
                 registration_year
         from ${ref('lt_cars_individuals')}
@@ -15,7 +14,6 @@ with individuals_base as (
 companies_base as (
         select 
                 upper(MARKE) as make,  	
-                -- upper(KOMERCINIS_PAV) as model,
                 'company' as user,
                 EXTRACT(YEAR FROM DATE(PIRM_REG_DATA)) AS registration_year
         from `vl-data-learn.lithuania_statistics.Atviri_JTP_parko_duomenys`
@@ -72,7 +70,6 @@ modifications as (
         when make in ('DAIHATSU (J)') then 'DAIHATSU'
         else make 
     end as make,
---     model,
     user,
     registration_year
 from join_tables
@@ -80,7 +77,6 @@ from join_tables
 group_data as (
         SELECT
                 make,
-                -- model,
                 user,
                 registration_year,
                 COUNT(make) AS counted
@@ -91,7 +87,6 @@ group_data as (
 calculate_share as (
         select
                 make,
-                -- model,
                 registration_year,
                 SUM(counted) as total_cars,
                 SUM(case when user = 'company' then counted else 0 end) as company_cars,

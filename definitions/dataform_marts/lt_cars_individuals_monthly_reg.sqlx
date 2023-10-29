@@ -53,9 +53,7 @@ modifications as (
         else make 
     end as make,
     model,
-    -- fuel,
     power_kW,
-    -- mileage,
     first_registration as reg_date,
     first_registration_lt as reg_date_lt,
     municipality,

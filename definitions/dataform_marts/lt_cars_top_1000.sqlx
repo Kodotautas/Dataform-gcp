@@ -5,7 +5,7 @@ config {
 
 with base AS (
   select 
-    *
+    regitra.* except (NUOSAVA_MASE, CO2_KIEKIS__WLTP, TERSALU_LYGIS, GALIOS_MASES_SANT)
   from `vl-data-learn.lithuania_statistics.Atviri_JTP_parko_duomenys` regitra
   where KODAS is not null 
   and GALIA is not null
@@ -30,13 +30,9 @@ joined AS (
     regitra.MARKE as make,
     regitra,KOMERCINIS_PAV as car_model,
     regitra.KATEGORIJA_KLASE AS category,
-    regitra.NUOSAVA_MASE as weight,
     regitra.GALIA as power_kw,
     regitra.DEGALAI as powertrain_type,
     regitra.CO2_KIEKIS as c02,
-    regitra.CO2_KIEKIS__WLTP as c02_wltp,
-    regitra.TERSALU_LYGIS as emmision_standart,
-    regitra.GALIOS_MASES_SANT as power_weight_ratio,
     regitra.PIRM_REG_DATA as first_reg_date,
     regitra.PIRM_REG_DATA_LT as first_reg_date_lt,
     regitra.SAVIVALDYBE as municipality,
@@ -57,13 +53,9 @@ select
   make,
   car_model,
   category,
-  -- weight,
   power_kw,
   powertrain_type,
   c02,
-  -- c02_wltp,
-  -- emmision_standart,
-  -- power_weight_ratio,
   first_reg_date,
   first_reg_date_lt,
   FORMAT_DATE('%Y-%m', first_reg_date_lt) as first_reg_date_in_lt,
