@@ -1,0 +1,13 @@
+config { 
+        type: "view",
+        description: 'SQL to get trafic violations marts model'
+       }
+
+       
+WITH base AS (
+  select 
+    *
+  from ${ref('lt_cars_bad_drivers_int')}
+)
+
+select * from base
