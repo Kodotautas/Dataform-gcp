@@ -1,0 +1,21 @@
+config { 
+        type: "view",
+        description: 'SQL to get trafic violations data'
+       }
+
+with base as (
+  select
+    FORMAT_DATE('%Y-%m', anr_uzregistruota) AS year_month,
+    amzius as age,
+    lytis as gender,
+    pilietybe as citizenship,
+    ank_straipsnis as law,
+    ank_straipsnio_dalis as law_part,
+    ank_straipsnis_pav as law_name,
+    ank_straipsnio_dalis_pav as law_part_name,
+  from `vl-data-learn.lithuania_statistics.ket_pazeidejas_raw`
+)
+
+select 
+  *
+from base
