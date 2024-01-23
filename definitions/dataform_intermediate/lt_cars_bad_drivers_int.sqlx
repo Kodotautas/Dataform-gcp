@@ -7,6 +7,24 @@ with base as (
   select
     FORMAT_DATE('%Y-%m', anr_uzregistruota) AS year_month,
     amzius as age,
+    CASE
+        WHEN amzius < 18 THEN 'Under 18'
+        WHEN amzius BETWEEN 18 AND 25 THEN '18-24'
+        WHEN amzius BETWEEN 25 AND 29 THEN '25-29'
+        WHEN amzius BETWEEN 30 AND 34 THEN '30-34'
+        WHEN amzius BETWEEN 35 AND 39 THEN '35-39'
+        WHEN amzius BETWEEN 40 AND 44 THEN '40-44'
+        WHEN amzius BETWEEN 45 AND 49 THEN '45-49'
+        WHEN amzius BETWEEN 50 AND 54 THEN '50-54'
+        WHEN amzius BETWEEN 55 AND 59 THEN '55-59'
+        WHEN amzius BETWEEN 60 AND 64 THEN '60-64'
+        WHEN amzius BETWEEN 65 AND 69 THEN '65-69'
+        WHEN amzius BETWEEN 70 AND 74 THEN '70-74'
+        WHEN amzius BETWEEN 75 AND 79 THEN '75-79'
+        WHEN amzius BETWEEN 80 AND 84 THEN '80-84'
+        WHEN amzius IS NULL THEN NULL
+        ELSE '>85'
+    END AS age_range,
     lytis as gender,
     pilietybe as citizenship,
     ank_straipsnis as law,
