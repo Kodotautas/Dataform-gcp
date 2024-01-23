@@ -5,7 +5,7 @@ config {
 
 with base as (
   select
-    FORMAT_DATE('%Y-%m', anr_uzregistruota) AS year_month,
+    PARSE_DATE('%Y-%m', FORMAT_DATE('%Y-%m', anr_uzregistruota)) AS year_month,
     amzius as age,
     CASE
         WHEN amzius < 18 THEN 'Under 18'
