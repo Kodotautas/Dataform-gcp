@@ -8,7 +8,7 @@ with base as (
     PARSE_DATE('%Y-%m', FORMAT_DATE('%Y-%m', anr_uzregistruota)) AS year_month,
     amzius as age,
     CASE
-        WHEN amzius < 18 THEN 'Under 18'
+        WHEN amzius < 18 THEN '<18'
         WHEN amzius BETWEEN 18 AND 25 THEN '18-24'
         WHEN amzius BETWEEN 25 AND 29 THEN '25-29'
         WHEN amzius BETWEEN 30 AND 34 THEN '30-34'
