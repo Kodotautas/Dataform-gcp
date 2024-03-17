@@ -1,0 +1,24 @@
+config { 
+        type: "view",
+        description: 'SQL to get all registered inland ships in Lithuania'
+       }
+
+with base as (
+    select * except(own_le,
+            ship_freeboard,
+            shipyard_location,
+            shipyard_title),
+        EXTRACT(YEAR FROM DATE(ship_constructed)) AS registration_year,
+        EXTRACT(YEAR FROM CURRENT_DATE()) AS current_year
+    from `vl-data-learn.lithuania_statistics.inland_vessels_raw`
+),
+add_age as (
+    select
+        *,
+        (current_year - registration_year) AS ship_age_up_to_current_year
+    from base
+)
+
+select 
+    * except (ship_constructed)
+from add_age

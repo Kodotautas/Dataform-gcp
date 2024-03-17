@@ -1,0 +1,45 @@
+config { 
+        type: "view",
+        description: 'SQL to get all individuals bicycles data'
+       }
+
+WITH base AS (
+  SELECT
+    * except(NUOSAVA_MASE, DARBINIS_TURIS, GALIA_ELEKTR, CO2_KIEKIS_WLTP),
+    EXTRACT(YEAR FROM DATE(PIRM_REG_DATA)) AS registration_year,
+    EXTRACT(YEAR FROM CURRENT_DATE()) AS current_year,
+    EXTRACT(MONTH FROM DATE(PIRM_REG_DATA)) AS registration_month
+  FROM `vl-data-learn.lithuania_statistics.Atviri_TP_parko_duomenys`
+  WHERE SAVIVALDYBE NOT LIKE '%BALTARUSIJA%' 
+      AND SAVIVALDYBE NOT LIKE '%JUNGTINĖ KARALYSTĖ%'
+      AND SAVIVALDYBE NOT LIKE '%KANADA%'
+      AND SAVIVALDYBE NOT LIKE '%LATVIJA%'
+      AND KATEGORIJA_KLASE IN ('L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7')
+)
+
+SELECT
+  MARKE as make,
+  KOMERCINIS_PAV as model,
+  KATEGORIJA_KLASE as category,
+  -- NUOSAVA_MASE as weight,
+  -- DARBINIS_TURIS as engine_capacity,
+  GALIA as power_kW,
+  -- GALIA_ELEKTR as power_electric_kW,
+  DEGALAI as fuel,
+  CO2_KIEKIS as CO2,
+  -- CO2_KIEKIS_WLTP as CO2_WLTP,
+  RIDA as mileage,
+  PIRM_REG_DATA as first_registration,
+  PIRM_REG_DATA_LT as first_registration_lt,
+  VALD_TIPAS as user,
+  SAVIVALDYBE as municipality,
+  APSKRITIS as region,
+  registration_year,
+  current_year,
+  registration_month,
+  (current_year - registration_year) AS car_age_up_to_current_year,
+  DATE(EXTRACT(YEAR FROM DATE(PIRM_REG_DATA_LT)), 
+      (EXTRACT(QUARTER FROM DATE(PIRM_REG_DATA_LT)) - 1) * 3 + 1, 1) AS year_quarter,
+  DATE_TRUNC(PIRM_REG_DATA_LT, MONTH) AS year_month
+FROM base
+WHERE GALIA < 1000 OR GALIA IS NULL

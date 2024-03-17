@@ -1,0 +1,78 @@
+config { 
+        type: "view",
+        description: 'SQL to get top individual cars by municipality'
+       }
+
+WITH base AS (
+  SELECT
+    SAVIVALDYBE,
+      case when MARKE in ('Volkswagen. VW','VOLKSWAGEN AG','VOLKSWAGEN VW','VOLKSWAGEN CTS','VOLKSWAGEN-VW VOLKSWAGEN. VW','5750 VOLKSWAGEN','VOLKSWAGEN/CTS', 'VOLKSWAGEN / AUTO-FORM', 'Volkswagen', 'Volkswagen. VW', 'VOLKSWAGEN. VW', 'VOLKSWAGEN', 'VOLKSWAGEN-VW') then 'VW' 
+          when MARKE in ('Audi', 'AUDI (H)', 'AUDI AG', 'AUDI AUDI') then 'AUDI'
+          when MARKE in ('DAIMLER AG', 'DAIMLER AG MB','DAIMLER (D) MERCEDES-BENZ','MERCEDES-BENZ MERCEDES-BENZ','DAIMLERCHRYSLER (D) MERCEDES-BENZ','MERCEDES-BENZ (E)','MERCEDES AMG','MERCEDES-AMG','MERCEDES BENZ', 'MERCEDES', 'Mercedes-Benz', 'MERCEDES-BENZ (D)', 'Daimler (D) Mercedes-Benz', 'MERCEDES-BENZ') then 'MERCEDES-BENZ'
+          when MARKE in ('BAYERISCHE MOTOREN WERKE AG','BMW I','BAYER.MOT.WERKE-BMW', 'BMW AG', 'BMW i', 'B.M.W.', 'BAYER.MOT.WERKE-BMW BMW', '1400 BMW') then 'BMW'
+          when MARKE in ('KIA MOTORS (SK)','KIA MOTOR (ROK)') then 'KIA'
+          when MARKE in ('FORD W. GMBH','FORD CNG TECHNIK','FORD (D) FORD','FORD-CNG-TECHNIK', '2600 FORD') then 'FORD'
+          when MARKE in ('SOVAB (F)', 'RENAULT (F) RENAULT','RENAULT (F)', 'RENAULT/CARPOL') then 'RENAULT'
+          when MARKE in ('DAIMLERCHRYSLER AG MB','CHRYSLER (USA)', 'DAIMLERCHRYSLER CO CHRYSLER','CHRYSLER LLC DODGE','CHRYSLER LLC CHRYSLER','DAIMLERCHRYSLER AG','DAIMLERCHRYSLER (USA)', 'DAIMLERCHRYSLER', 'DAIMLERCHRYSLER (D)') then 'CHRYSLER'
+          when MARKE in ('FORD W GMBH','FORD (D)') then 'FORD'
+          when MARKE in ('MITSUBISHI (NL)', 'MITSUBISHI (J)') then 'MITSUBISHI'
+          when MARKE in ('NISSAN EUROPE (NL)','NISSAN EUROPE (F)') then 'NISSAN'
+          when MARKE in ('SEAT (E)') then 'SEAT'
+          when MARKE in ('SKODA (CZ) SKODA','SKODA (CZ)') then 'SKODA'
+          when MARKE in ('TOYOTA EUROPE (B) TOYOTA','TOYOTA MOTOR EUROPE NV/SA','TOYOTA EUROPE (B)','TOYOTA MEM (B)') then 'TOYOTA'
+          when MARKE in ('OPEL AUTOMOBILE OPEL','OPEL OPEL','ADAM OPEL AG','ADAM OPEL', 'A. OPEL GMBH','VAUXHALL', 'ADAM OPEL GMBH') then 'OPEL'
+          when MARKE in ('ALFA') then 'ALFA ROMEO'
+          when MARKE in ('CITROEN (F) CITROEN','CITROEN (F)', 'AUTOMOBILES CITROEN') then 'CITROEN'
+          when MARKE in ('PEUGEOT (F) PEUGEOT','4500 PEUGEOT', 'AUTOMOBILES PEUGEOT', 'PEUGEOT (F)') then 'PEUGEOT'
+          when MARKE in ('HONDA MOTOR CO. ','HONDA (GB)', 'HONDA (RC)', 'HONDA MOTOR (J)', 'HONDA OF THE UK') then 'HONDA'
+          when MARKE in ('HYUNDAI MOTOR (CZ)','HYUNDAI. GENESIS', 'HYUNDAI MOTOR (SK)','HYUNDAI MOTOR (ROK) HYUNDAI','HYUNDAI MOTOR (ROK)') then 'HYUNDAI'
+          when MARKE in ('MAZDA (J) MAZDA', 'MAZDA (J)') then 'MAZDA'
+          when MARKE in ('SSANG YONG') then 'SSANGYONG'
+          when MARKE in ('VOLVO CAR CORPORATION','VOLVO (S) VOLVO','VOLVO (S)') then 'VOLVO'
+          when MARKE in ('SAAB AUTOMOBILE (S)','5000 SAAB') then 'SAAB'
+          when MARKE in ('FIAT GROUP AUTOMOBILES SPA','FIAT-DETHLEFFS','FIAT AUTO SPA','FIAT (I)') then 'FIAT'
+          when MARKE in ('FUJI HEAVY IND.(J) SUBARU', 'FUJI HEAVY IND.(J)') then 'SUBARU'
+          when MARKE in ('GM DAEWOO (ROK)') then 'GM DAEWOO'
+          when MARKE in ('TESLA (USA) TESLA','TESLA MOTORS') then 'TESLA'
+          when MARKE in ('JAGUAR (GB)','JAGUAR CARS LIMITED') then 'JAGUAR'
+          when MARKE in ('SUZUKI (J)') then 'SUZUKI'
+          when MARKE in ('AUTOMOBILI LAMBORGHINI', 'AUTOMOBILI LAMBORGHINI S.P.A.') then 'LAMBORGHINI'
+          when MARKE in ('JAGUAR LAND ROVER LTD', 'JAGUAR LAND ROVER','JAGUAR LAND ROVER LIMITED','LANDROVER', 'LAND ROVER (GB)') then 'LAND ROVER'
+          when MARKE in ('CHALLENGER') then 'DODGE'
+          when MARKE in ('MINI MINI') then 'MINI'
+          when MARKE in ('MAGYAR SUZUKI (H)') then 'SUZUKI'
+          when MARKE in ('DAIMLERCHRYSLER CO JEEP') then 'JEEP'
+          when MARKE in ('ROVER (GB)') then 'ROVER'
+          when MARKE in ('DAIHATSU (J)') then 'DAIHATSU'
+          else MARKE 
+      end as MARKE,
+      KOMERCINIS_PAV,
+    GALIA,
+    RIDA
+  FROM `vl-data-learn.lithuania_statistics.Atviri_TP_parko_duomenys`
+  WHERE SAVIVALDYBE NOT LIKE '%BALTARUSIJA%' 
+      AND SAVIVALDYBE NOT LIKE '%JUNGTINĖ KARALYSTĖ%'
+      AND SAVIVALDYBE NOT LIKE '%KANADA%'
+      AND SAVIVALDYBE NOT LIKE '%LATVIJA%'
+      AND (GALIA < 1000 OR GALIA IS NULL)
+),
+make_model_counts AS (
+  SELECT
+    SAVIVALDYBE,
+    concat(MARKE, ' ', KOMERCINIS_PAV) as make_model,
+    COUNT(*) AS model_count,
+    AVG(RIDA) as avg_mileage,
+    ROW_NUMBER() OVER(PARTITION BY SAVIVALDYBE ORDER BY COUNT(*) DESC) AS row_num
+  FROM base
+  WHERE concat(MARKE, ' ', KOMERCINIS_PAV) != 'Nuasmeninta Nuasmeninta'
+  GROUP BY SAVIVALDYBE, make_model
+)
+
+SELECT
+  SAVIVALDYBE as municipality,
+  make_model,
+  model_count,
+  ROUND(avg_mileage,0) as avg_mileage
+FROM make_model_counts
+WHERE row_num <= 100 AND avg_mileage IS NOT NULL
+ORDER BY SAVIVALDYBE, model_count DESC

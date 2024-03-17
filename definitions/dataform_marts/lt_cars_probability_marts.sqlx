@@ -1,0 +1,103 @@
+config { 
+        type: "view",
+        description: 'SQL to get by make and model probability'
+       }
+
+with individuals_base as (
+        select 
+                upper(make) as make,
+                'individual' as user,
+                registration_year
+        from ${ref('lt_cars_individuals')}
+        where registration_year is not null
+),
+companies_base as (
+        select 
+                upper(MARKE) as make,  	
+                'company' as user,
+                EXTRACT(YEAR FROM DATE(PIRM_REG_DATA)) AS registration_year
+        from `vl-data-learn.lithuania_statistics.Atviri_JTP_parko_duomenys`
+        where KATEGORIJA_KLASE = 'M1'
+),
+join_tables as (
+        select *
+        from individuals_base
+
+        union all
+
+        select *
+        from companies_base
+),
+modifications as (
+  select
+    case when make in ('VOLKSWAGEN AG','VOLKSWAGEN VW','VOLKSWAGEN CTS','VOLKSWAGEN-VW VOLKSWAGEN. VW','5750 VOLKSWAGEN','VOLKSWAGEN/CTS', 'VOLKSWAGEN / AUTO-FORM', 'Volkswagen', 'Volkswagen. VW', 'VOLKSWAGEN. VW', 'VOLKSWAGEN', 'VOLKSWAGEN-VW') then 'VW' 
+        when make in ('Audi', 'AUDI (H)', 'AUDI AG', 'AUDI AUDI') then 'AUDI'
+        when make in ('DAIMLER AG', 'DAIMLER AG MB','DAIMLER (D) MERCEDES-BENZ','MERCEDES-BENZ MERCEDES-BENZ','DAIMLERCHRYSLER (D) MERCEDES-BENZ','MERCEDES-BENZ (E)','MERCEDES AMG','MERCEDES-AMG','MERCEDES BENZ', 'MERCEDES', 'Mercedes-Benz', 'MERCEDES-BENZ (D)', 'Daimler (D) Mercedes-Benz', 'MERCEDES-BENZ') then 'MERCEDES-BENZ'
+        when make in ('BAYERISCHE MOTOREN WERKE AG','BMW I','BAYER.MOT.WERKE-BMW', 'BMW AG', 'BMW i', 'B.M.W.', 'BAYER.MOT.WERKE-BMW BMW', '1400 BMW') then 'BMW'
+        when make in ('KIA MOTORS (SK)','KIA MOTOR (ROK)') then 'KIA'
+        when make in ('FORD W. GMBH','FORD CNG TECHNIK','FORD (D) FORD','FORD-CNG-TECHNIK', '2600 FORD') then 'FORD'
+        when make in ('SOVAB (F)', 'RENAULT (F) RENAULT','RENAULT (F)', 'RENAULT/CARPOL') then 'RENAULT'
+        when make in ('DAIMLERCHRYSLER AG MB','CHRYSLER (USA)', 'DAIMLERCHRYSLER CO CHRYSLER','CHRYSLER LLC DODGE','CHRYSLER LLC CHRYSLER','DAIMLERCHRYSLER AG','DAIMLERCHRYSLER (USA)', 'DAIMLERCHRYSLER', 'DAIMLERCHRYSLER (D)') then 'CHRYSLER'
+        when make in ('FORD W GMBH','FORD (D)') then 'FORD'
+        when make in ('MITSUBISHI (NL)', 'MITSUBISHI (J)') then 'MITSUBISHI'
+        when make in ('NISSAN EUROPE (NL)','NISSAN EUROPE (F)') then 'NISSAN'
+        when make in ('SEAT (E)') then 'SEAT'
+        when make in ('SKODA (CZ) SKODA','SKODA (CZ)') then 'SKODA'
+        when make in ('TOYOTA EUROPE (B) TOYOTA','TOYOTA MOTOR EUROPE NV/SA','TOYOTA EUROPE (B)','TOYOTA MEM (B)') then 'TOYOTA'
+        when make in ('OPEL AUTOMOBILE OPEL','OPEL OPEL','ADAM OPEL AG','ADAM OPEL', 'A. OPEL GMBH','VAUXHALL', 'ADAM OPEL GMBH') then 'OPEL'
+        when make in ('ALFA') then 'ALFA ROMEO'
+        when make in ('CITROEN (F) CITROEN','CITROEN (F)', 'AUTOMOBILES CITROEN') then 'CITROEN'
+        when make in ('PEUGEOT (F) PEUGEOT','4500 PEUGEOT', 'AUTOMOBILES PEUGEOT', 'PEUGEOT (F)') then 'PEUGEOT'
+        when make in ('HONDA MOTOR CO. ','HONDA (GB)', 'HONDA (RC)', 'HONDA MOTOR (J)', 'HONDA OF THE UK') then 'HONDA'
+        when make in ('HYUNDAI MOTOR (CZ)','HYUNDAI. GENESIS', 'HYUNDAI MOTOR (SK)','HYUNDAI MOTOR (ROK) HYUNDAI','HYUNDAI MOTOR (ROK)') then 'HYUNDAI'
+        when make in ('MAZDA (J) MAZDA', 'MAZDA (J)') then 'MAZDA'
+        when make in ('SSANG YONG') then 'SSANGYONG'
+        when make in ('VOLVO CAR CORPORATION','VOLVO (S) VOLVO','VOLVO (S)') then 'VOLVO'
+        when make in ('SAAB AUTOMOBILE (S)','5000 SAAB') then 'SAAB'
+        when make in ('FIAT GROUP AUTOMOBILES SPA','FIAT-DETHLEFFS','FIAT AUTO SPA','FIAT (I)') then 'FIAT'
+        when make in ('FUJI HEAVY IND.(J) SUBARU', 'FUJI HEAVY IND.(J)') then 'SUBARU'
+        when make in ('GM DAEWOO (ROK)') then 'GM DAEWOO'
+        when make in ('TESLA (USA) TESLA','TESLA MOTORS') then 'TESLA'
+        when make in ('JAGUAR (GB)','JAGUAR CARS LIMITED') then 'JAGUAR'
+        when make in ('SUZUKI (J)') then 'SUZUKI'
+        when make in ('AUTOMOBILI LAMBORGHINI', 'AUTOMOBILI LAMBORGHINI S.P.A.') then 'LAMBORGHINI'
+        when make in ('JAGUAR LAND ROVER LTD', 'JAGUAR LAND ROVER','JAGUAR LAND ROVER LIMITED','LANDROVER', 'LAND ROVER (GB)') then 'LAND ROVER'
+        when make in ('CHALLENGER') then 'DODGE'
+        when make in ('MINI MINI') then 'MINI'
+        when make in ('MAGYAR SUZUKI (H)') then 'SUZUKI'
+        when make in ('DAIMLERCHRYSLER CO JEEP') then 'JEEP'
+        when make in ('ROVER (GB)') then 'ROVER'
+        when make in ('DAIHATSU (J)') then 'DAIHATSU'
+        else make 
+    end as make,
+    user,
+    registration_year
+from join_tables
+),
+group_data as (
+        SELECT
+                make,
+                user,
+                registration_year,
+                COUNT(make) AS counted
+        FROM modifications
+        GROUP BY make, user, registration_year
+        HAVING COUNT(make) > 2
+),
+calculate_share as (
+        select
+                make,
+                registration_year,
+                SUM(counted) as total_cars,
+                SUM(case when user = 'company' then counted else 0 end) as company_cars,
+                ROUND((SUM(case when user = 'company' then counted else 0 end) / SUM(counted)) * 100,1) as company_share,
+                ROUND((SUM(case when user = 'individual' then counted else 0 end) / SUM(counted)) * 100,1) as individual_share
+        from group_data
+        group by make, registration_year
+)
+
+select * from calculate_share
+where registration_year is not null 
+        and make not in ('NUASMENINTA', 'NETHERLANDS CAR (NL)')
+
+

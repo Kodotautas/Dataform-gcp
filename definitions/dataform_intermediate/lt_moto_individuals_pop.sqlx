@@ -1,0 +1,45 @@
+config { 
+        type: "view",
+        description: 'SQL to get top individual cars by municipality'
+       }
+
+WITH base AS (
+  SELECT
+    SAVIVALDYBE,
+    case when MARKE in ('APRILIA (I)', 'APRILIA S.P.A.', 'APRILIA SPA', 'APRILIA.DERBI.GILERA', 'APRILLIA') then 'APRILIA' 
+        when MARKE in ('Audi', 'AUDI (H)', 'AUDI AG', 'AUDI AUDI') then 'AUDI'
+        when MARKE in ('MERCEDES BENZ', 'MERCEDES', 'Mercedes-Benz', 'MERCEDES-BENZ (D)', 'Daimler (D) Mercedes-Benz', 'MERCEDES-BENZ') then 'MERCEDES-BENZ'
+        when MARKE in ('BAYER.MOT.WERKE-BMW', 'BMW AG', 'BMW i', 'B.M.W.', 'BAYER.MOT.WERKE-BMW BMW') then 'BMW'
+        else MARKE 
+    end as MARKE,
+    KOMERCINIS_PAV,
+    GALIA,
+    RIDA
+  FROM `vl-data-learn.lithuania_statistics.Atviri_TP_parko_duomenys`
+  WHERE SAVIVALDYBE NOT LIKE '%BALTARUSIJA%' 
+      AND SAVIVALDYBE NOT LIKE '%JUNGTINĖ KARALYSTĖ%'
+      AND SAVIVALDYBE NOT LIKE '%KANADA%'
+      AND SAVIVALDYBE NOT LIKE '%LATVIJA%'
+      AND (GALIA < 1000 OR GALIA IS NULL)
+      AND KATEGORIJA_KLASE IN ('L1', 'L2', 'L3', 'L4', 'L5', 'L6', 'L7')
+),
+make_model_counts AS (
+  SELECT
+    SAVIVALDYBE,
+    MARKE,
+    COUNT(*) AS model_count,
+    AVG(RIDA) as avg_mileage,
+    ROW_NUMBER() OVER(PARTITION BY SAVIVALDYBE ORDER BY COUNT(*) DESC) AS row_num
+  FROM base
+  WHERE concat(MARKE, ' ', KOMERCINIS_PAV) != 'Nuasmeninta Nuasmeninta'
+  GROUP BY SAVIVALDYBE, MARKE
+)
+
+SELECT
+  SAVIVALDYBE as municipality,
+  MARKE as make,
+  model_count,
+  ROUND(avg_mileage,0) as avg_mileage
+FROM make_model_counts
+WHERE row_num <= 100 AND avg_mileage IS NOT NULL
+ORDER BY SAVIVALDYBE, model_count DESC
