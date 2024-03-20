@@ -1,8 +1,8 @@
 {
-  "defaultSchema": "dataform",
+  "defaultSchema": "dataform_dataset",
   "assertionSchema": "dataform_assertions",
   "warehouse": "bigquery",
   "defaultDatabase": "vl-data-learn",
-  "defaultLocation": "europe-west1"
+  "defaultLocation": "europe-central2"
 }
     
